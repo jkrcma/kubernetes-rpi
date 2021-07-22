@@ -1,0 +1,46 @@
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: home-assistant
+  namespace: iot
+spec:
+  chart: https://github.com/k8s-at-home/charts/releases/download/home-assistant-9.3.0/home-assistant-9.3.0.tgz
+  valuesContent: |-
+    env:
+      TZ: Europe/Prague
+    ingress:
+      main:
+        enabled: true
+        hosts:
+          - host: ha.k8s.den
+            paths:
+              - path: /
+                service:
+                  name: home-assistant
+                  port: 8123
+    securityContext:
+      privileged: false
+    persistence:
+      config:
+        enabled: true
+        mountPath: /config
+      usb-acm:
+        enabled: false
+        type: hostPath
+        hostPath: /dev/ttyACM0
+        mountPath: /dev/ttyACM0
+      usb-ama:
+        enabled: false
+        type: hostPath
+        hostPath: /dev/ttyAMA0
+        mountPath: /dev/ttyAMA0
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: home.taiku.cz/hardware
+              operator: In
+              values:
+                - zigbee-controller

@@ -1,0 +1,53 @@
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: deconz
+  namespace: iot
+spec:
+  chart: https://github.com/k8s-at-home/charts/releases/download/deconz-5.2.0/deconz-5.2.0.tgz
+  valuesContent: |-
+    image:
+      tag: latest
+    env:
+      TZ: Europe/Prague
+      DECONZ_DEVICE: 0
+      DECONZ_VNC_PASSWORD:
+        secretKeyRef:
+          name: deconz-vnc-password
+          key: password
+    ingress:
+      main:
+        enabled: true
+        hosts:
+          - host: deconz.k8s.den
+            paths:
+              - path: /
+                service:
+                  name: deconz
+                  port: 80
+    securityContext:
+      privileged: true
+    persistence:
+      config:
+        enabled: true
+        mountPath: /root/.local/share/dresden-elektronik/deCONZ
+      usb-acm:
+        enabled: true
+        type: hostPath
+        hostPath: /dev/ttyACM0
+        mountPath: /dev/ttyACM0
+      usb-ama:
+        enabled: true
+        type: hostPath
+        hostPath: /dev/ttyAMA0
+        mountPath: /dev/ttyAMA0
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+          - matchExpressions:
+            - key: home.taiku.cz/hardware
+              operator: In
+              values:
+                - zigbee-controller
