@@ -13,7 +13,7 @@ spec:
       main:
         enabled: true
         hosts:
-          - host: ha.k8s.den
+          - host: home-assistant.den
             paths:
               - path: /
                 service:
