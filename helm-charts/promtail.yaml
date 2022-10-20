@@ -1,0 +1,12 @@
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: promtail
+  namespace: kube-system
+spec:
+  chart: https://github.com/grafana/helm-charts/releases/download/promtail-6.5.1/promtail-6.5.1.tgz
+  valuesContent: |-
+    config:
+      clients:
+        - url: http://10.7.21.13:3100/loki/api/v1/push
