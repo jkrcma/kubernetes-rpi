@@ -5,7 +5,7 @@ metadata:
   name: home-assistant
   namespace: iot
 spec:
-  chart: https://github.com/k8s-at-home/charts/releases/download/home-assistant-9.3.0/home-assistant-9.3.0.tgz
+  chart: https://github.com/k8s-at-home/charts/releases/download/home-assistant-12.0.1/home-assistant-12.0.1.tgz
   valuesContent: |-
     env:
       TZ: Europe/Prague
@@ -20,21 +20,16 @@ spec:
                   name: home-assistant
                   port: 8123
     securityContext:
-      privileged: false
+      privileged: true
     persistence:
       config:
         enabled: true
         mountPath: /config
-      usb-acm:
-        enabled: false
+      usb:
+        enabled: true
         type: hostPath
         hostPath: /dev/ttyACM0
         mountPath: /dev/ttyACM0
-      usb-ama:
-        enabled: false
-        type: hostPath
-        hostPath: /dev/ttyAMA0
-        mountPath: /dev/ttyAMA0
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
