@@ -5,13 +5,13 @@ metadata:
   name: deconz
   namespace: iot
 spec:
-  chart: https://github.com/k8s-at-home/charts/releases/download/deconz-5.2.0/deconz-5.2.0.tgz
+  chart: https://github.com/k8s-at-home/charts/releases/download/deconz-6.3.0/deconz-6.3.0.tgz
   valuesContent: |-
     image:
       tag: latest
     env:
       TZ: Europe/Prague
-      DECONZ_DEVICE: 0
+      DECONZ_DEVICE: /dev/ttyACM0
       DECONZ_VNC_PASSWORD:
         secretKeyRef:
           name: deconz-vnc-password
@@ -31,17 +31,11 @@ spec:
     persistence:
       config:
         enabled: true
-        mountPath: /root/.local/share/dresden-elektronik/deCONZ
-      usb-acm:
+      usb:
         enabled: true
         type: hostPath
         hostPath: /dev/ttyACM0
         mountPath: /dev/ttyACM0
-      usb-ama:
-        enabled: true
-        type: hostPath
-        hostPath: /dev/ttyAMA0
-        mountPath: /dev/ttyAMA0
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
